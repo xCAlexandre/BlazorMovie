@@ -1,0 +1,131 @@
+﻿@page	"/Asdrubal/Formulario"
+@using System.Net.Http
+@inject HttpClient Http;
+
+<h3>Formulario</h3>
+<div class="card m-3">
+    <h4 class="card-header">Desafio Asdrubal</h4>
+    <div class="card-body">
+        <EditForm Model="form" OnValidSubmit="Criar">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <p>
+                    <div class="form-row">
+                        <div class="form-group col-2">
+                            <table>Titulo</table>
+                            <InputSelect @bind-Value="@form.Titulo" class="form-control">
+                                <option> </option>
+                                <option> Sr </option>
+                                <option> Sra </option>
+                            </InputSelect>
+                            <ValidationMessage For="@(() => form.Titulo)" />
+                        </div>
+                        <div class="form-group col-5">
+                            <table>Nome</table>
+                            <InputText class="form-control" @bind-Value="@form.Nome" />
+                            <ValidationMessage For="@(() => form.Nome)" />
+                        </div>
+                        <div class="form-group col-5">
+                            <table>Sobrenome</table>
+                            <InputText class="form-control" @bind-Value="@form.Sobrenome" />
+                            <ValidationMessage For="@(() => form.Sobrenome)" />
+                        </div>
+                    </div>
+
+                    @*-------------------------------------SECOND ROW----------------------------------------------*@
+
+
+                    <div class="form-row">
+
+                        <div class="form-group col-5">
+                            <table>Data de Nascimento</table>
+                            <InputDate class="form-control" @bind-Value="@form.DatadeNascimento" />
+                            <ValidationMessage For="@(() => form.DatadeNascimento)" />
+                        </div>
+
+                        <div class="form-group col-7">
+                            <table>Email</table>
+                            <InputText class="form-control" @bind-Value="@form.Email" />
+                            <ValidationMessage For="@(() => form.Email)" />
+                        </div>
+
+                    </div>
+
+                    @*--------------------------------------THIRD ROW----------------------------------------------*@
+
+                    <div class="form-row">
+                        <div class="form-group col-6">
+                            <table> Senha </table>
+                            <InputText class="form-control" type="password" id="password" @bind-Value="@form.Senha" />
+                            <ValidationMessage For="@(() => form.Senha)" />
+                        </div>
+
+                        <div class="form-group col-6">
+                            <table> Confirmar senha </table>
+                            <InputText class="form-control" type="password" id="password" @bind-Value="@form.ConfirmarSenha" />
+                            <ValidationMessage For="@(() => form.ConfirmarSenha)" />
+                        </div>
+                    </div>
+                    @*--------------------------------------FOURTH ROW----------------------------------------------*@
+                    <div class="form-row">
+                        <div class="form-check">
+                            <InputCheckbox @bind-Value="@form.Termos" />
+                            <ValidationMessage For="@(() => form.Termos)" />
+                            <label class="form-check-label" for="defaultCheck1">
+                                Termos de Uso
+                            </label>
+                        </div>
+                    </div>
+                </p>
+            </div>
+            <button class="btn btn-outline-primary" type="submit">Salvar</button>
+            <button class="btn btn-outline-secondary" type="reset">Cancel</button>
+        </EditForm>
+    </div>
+</div>
+
+
+@code {
+
+    //Genero gen = new Genero();
+    Formulario1 form = new Formulario1();
+    private EditContext editContext;
+
+    protected override async Task OnInitializedAsync()
+    {
+        editContext = new EditContext(form);
+        var response = await Http.GetAsync("form");
+        if (response.IsSuccessStatusCode)
+        {
+
+        }
+    }
+
+
+    private void Criar() {
+        Console.WriteLine(form.Titulo);
+        Console.WriteLine(form.Nome);
+        Console.WriteLine(form.Sobrenome);
+        Console.WriteLine(form.DatadeNascimento);
+        Console.WriteLine(form.Email);
+        Console.WriteLine(form.Senha);
+        Console.WriteLine(form.Termos);
+    }
+
+    private bool CheckPassword(string senha)
+    {
+        if(senha == form.Senha)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    private void Reset()
+    {
+        form = new Formulario1();
+        editContext = new EditContext(form);
+
+    }
+
+}
