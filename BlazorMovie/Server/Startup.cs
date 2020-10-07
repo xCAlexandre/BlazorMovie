@@ -6,6 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using BlazorMovie.Shared;
+using System;
 
 namespace BlazorMovie.Server
 {
@@ -21,10 +24,11 @@ namespace BlazorMovie.Server
 		// This method gets called by the runtime. Use this method to add services to the container.
 		// For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
 		public void ConfigureServices(IServiceCollection services)
-		{
-
+{
+			services.AddDbContext<ApplicationDBContext>(options =>options.UseMySql(Configuration.GetConnectionString("MyDb2")));
 			services.AddControllersWithViews();
 			services.AddRazorPages();
+			
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

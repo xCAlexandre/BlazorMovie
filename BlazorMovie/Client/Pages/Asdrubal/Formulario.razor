@@ -3,10 +3,35 @@
 @inject HttpClient Http;
 
 <h3>Formulario</h3>
+
+<div class="card-body">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">First</th>
+                <th scope="col">Last</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in FormList)
+            {
+                <tr>
+                    <td>@item.Titulo</td>
+                    <td>@item.Nome</td>
+                    <td>@item.Sobrenome</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
 <div class="card m-3">
     <h4 class="card-header">Desafio Asdrubal</h4>
     <div class="card-body">
-        <EditForm Model="form" OnValidSubmit="Criar">
+        <EditForm Model="@form" OnValidSubmit="HandleValidSubmit" @onreset="Reset">
             <DataAnnotationsValidator />
             <div class="form-group">
                 <p>
@@ -81,6 +106,12 @@
             <button class="btn btn-outline-primary" type="submit">Salvar</button>
             <button class="btn btn-outline-secondary" type="reset">Cancel</button>
         </EditForm>
+        @*----------------------------------TABELA DE USUARIOS--------------------------------------*@
+        
+
+
+
+
     </div>
 </div>
 
@@ -88,38 +119,32 @@
 @code {
 
     //Genero gen = new Genero();
+    private List<Formulario1> FormList = new List<Formulario1>();
     Formulario1 form = new Formulario1();
-    private EditContext editContext;
+    private EditContext editContext { get; set; }
+
+
 
     protected override async Task OnInitializedAsync()
     {
-        editContext = new EditContext(form);
-        var response = await Http.GetAsync("form");
-        if (response.IsSuccessStatusCode)
-        {
 
+        var forms = await Http.GetFromJsonAsync<List<Formulario1>>("/FormController/List");
+        foreach (var item in forms)
+        {
+            FormList.Add(item);
         }
     }
 
 
-    private void Criar() {
-        Console.WriteLine(form.Titulo);
-        Console.WriteLine(form.Nome);
-        Console.WriteLine(form.Sobrenome);
-        Console.WriteLine(form.DatadeNascimento);
-        Console.WriteLine(form.Email);
-        Console.WriteLine(form.Senha);
-        Console.WriteLine(form.Termos);
-    }
-
-    private bool CheckPassword(string senha)
+    private async Task HandleValidSubmit()
     {
-        if(senha == form.Senha)
-        {
-            return true;
-        }
-        return false;
+        //enviar dados para o controller no backend
+        var teste = await Http.PostAsJsonAsync("/Form/Create", form);
+
     }
+
+
+
 
     private void Reset()
     {
